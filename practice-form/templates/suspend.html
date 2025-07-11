@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suspensión de Empleados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#1e3a8a',
+                        soft: '#e0f2fe',
+                        slateDark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-soft to-white dark:from-slate-900 dark:to-slate-800 text-slate-800 dark:text-white min-h-screen">
+
+<header class="flex justify-between items-center p-4 bg-white dark:bg-slate-900 shadow-md">
+    <img src="/static/img.png" alt="Logo" class="h-10" />
+    <button onclick="location.href='dashboard.html'" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">
+        ⬅️ <span id="backText">Volver al Dashboard</span>
+    </button>
+</header>
+
+<main class="max-w-6xl mx-auto py-10 px-4">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-primary" id="title">👥 Gestión de Empleados</h1>
+        <button id="toggleLang" class="bg-primary text-white px-4 py-2 rounded-lg">🌐 English</button>
+    </div>
+    <div id="employeeCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</main>
+
+<script>
+    const employees = [
+        { id: 1, name: "Carlos Pérez", gender: "Masculino", address: "Col. Miraflores, Tegucigalpa", email: "carlos.perez@email.com", age: 34, seniority: "2 años, 3 meses", photo: "https://i.pravatar.cc/150?img=1", status: "activo", reason: "" },
+        { id: 2, name: "Ana López", gender: "Femenino", address: "Res. Lomas del Guijarro, Tegucigalpa", email: "ana.lopez@email.com", age: 28, seniority: "1 año, 10 meses", photo: "https://i.pravatar.cc/150?img=2", status: "activo", reason: "" },
+        { id: 3, name: "Jorge Martínez", gender: "Masculino", address: "Barrio El Centro, SPS", email: "jorge.martinez@email.com", age: 45, seniority: "8 años", photo: "https://i.pravatar.cc/150?img=3", status: "inactivo", reason: "Renuncia" },
+        { id: 4, name: "Lucía Torres", gender: "Femenino", address: "Col. 21 de Octubre, Tegucigalpa", email: "lucia.torres@email.com", age: 31, seniority: "3 años, 5 meses", photo: "https://i.pravatar.cc/150?img=4", status: "activo", reason: "" },
+        { id: 5, name: "Pedro Álvarez", gender: "Masculino", address: "Bo. El Benque, La Ceiba", email: "pedro.alvarez@email.com", age: 29, seniority: "1 año", photo: "https://i.pravatar.cc/150?img=5", status: "inactivo", reason: "Enfermedad" },
+        { id: 6, name: "María Sánchez", gender: "Femenino", address: "Col. Kennedy, Tegucigalpa", email: "maria.sanchez@email.com", age: 42, seniority: "10 años", photo: "https://i.pravatar.cc/150?img=6", status: "activo", reason: "" },
+        { id: 7, name: "Luis Ramírez", gender: "Masculino", address: "Res. Villa Nueva, Comayagua", email: "luis.ramirez@email.com", age: 37, seniority: "4 años, 2 meses", photo: "https://i.pravatar.cc/150?img=7", status: "inactivo", reason: "Licencia" },
+        { id: 8, name: "Sofía Herrera", gender: "Femenino", address: "Col. El Carrizal, Tegucigalpa", email: "sofia.herrera@email.com", age: 26, seniority: "6 meses", photo: "https://i.pravatar.cc/150?img=8", status: "activo", reason: "" },
+        { id: 9, name: "Elena Castillo", gender: "Femenino", address: "Bo. Abajo, Santa Rosa de Copán", email: "elena.castillo@email.com", age: 33, seniority: "4 años", photo: "https://i.pravatar.cc/150?img=9", status: "inactivo", reason: "Despido" }
+    ];
+
+    const translations = {
+        es: {
+            title: '👥 Gestión de Empleados',
+            back: 'Volver al Dashboard',
+            suspend: '🔴 Suspender',
+            activate: '🟢 Activar',
+            reasonLabel: 'Motivo de suspensión',
+            statusActive: 'Activo ✅',
+            statusInactive: 'Inactivo ❌',
+            ageLabel: 'Edad:',
+            genderLabel: 'Género:',
+            seniorityLabel: 'Antigüedad:',
+            statusLabel: 'Estado:',
+            reasons: ['Licencia', 'Despido', 'Renuncia', 'Enfermedad'],
+            toggleLangBtn: '🌐 English'
+        },
+        en: {
+            title: '👥 Employee Management',
+            back: 'Back to Dashboard',
+            suspend: '🔴 Suspend',
+            activate: '🟢 Activate',
+            reasonLabel: 'Suspension reason',
+            statusActive: 'Active ✅',
+            statusInactive: 'Inactive ❌',
+            ageLabel: 'Age:',
+            genderLabel: 'Gender:',
+            seniorityLabel: 'Seniority:',
+            statusLabel: 'Status:',
+            reasons: ['Leave', 'Dismissal', 'Resignation', 'Illness'],
+            toggleLangBtn: '🌐 Español'
+        }
+    };
+
+    let currentLang = 'es';
+
+    function renderEmployees() {
+        const container = document.getElementById('employeeCards');
+        container.innerHTML = '';
+        const t = translations[currentLang];
+        document.getElementById('title').textContent = t.title;
+        document.getElementById('backText').textContent = t.back;
+        document.getElementById('toggleLang').textContent = t.toggleLangBtn;
+
+        employees.forEach((emp, index) => {
+            const card = document.createElement('div');
+            card.className = "bg-white dark:bg-slate-800 rounded-xl p-4 shadow";
+            card.innerHTML = `
+      <div class="flex items-center gap-4">
+        <img src="${emp.photo}" alt="Foto" class="w-16 h-16 rounded-full object-cover">
+        <div>
+          <h2 class="text-lg font-bold">${emp.name}</h2>
+          <p class="text-sm">${emp.email}</p>
+          <p class="text-sm">${emp.address}</p>
+        </div>
+      </div>
+      <div class="mt-3 space-y-1 text-sm">
+        <p><strong>${t.ageLabel}</strong> ${emp.age}</p>
+        <p><strong>${t.genderLabel}</strong> ${emp.gender}</p>
+        <p><strong>${t.seniorityLabel}</strong> ${emp.seniority}</p>
+        <p><strong>${t.statusLabel}</strong> ${emp.status === 'activo' ? t.statusActive : t.statusInactive}${emp.reason ? ` (${emp.reason})` : ''}</p>
+      </div>
+      <div class="mt-3">
+        <select id="reason-${emp.id}" class="w-full p-2 rounded-md border mt-2" ${emp.status === 'activo' ? '' : 'disabled'}>
+          <option disabled selected>${t.reasonLabel}</option>
+          ${t.reasons.map(r => `<option value="${r}">${r}</option>`).join('')}
+        </select>
+        <button onclick="toggleStatus(${index})" class="mt-2 w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary">
+          ${emp.status === 'activo' ? t.suspend : t.activate}
+        </button>
+      </div>
+    `;
+            container.appendChild(card);
+        });
+    }
+
+    function toggleStatus(index) {
+        const emp = employees[index];
+        if (emp.status === 'activo') {
+            const selected = document.getElementById(`reason-${emp.id}`).value;
+            if (!selected || selected === translations[currentLang].reasonLabel) {
+                alert(currentLang === 'es' ? 'Por favor selecciona un motivo.' : 'Please select a reason.');
+                return;
+            }
+            emp.status = 'inactivo';
+            emp.reason = selected;
+        } else {
+            emp.status = 'activo';
+            emp.reason = '';
+        }
+        renderEmployees();
+    }
+
+    document.getElementById('toggleLang').addEventListener('click', () => {
+        currentLang = currentLang === 'es' ? 'en' : 'es';
+        renderEmployees();
+    });
+
+    renderEmployees();
+</script>
+</body>
+</html>

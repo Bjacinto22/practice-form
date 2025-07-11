@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Solicitud de Empleo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .input { @apply border border-gray-300 rounded px-3 py-2 w-full; }
+        .section-title { @apply text-xl font-semibold mb-4 border-b border-gray-300 pb-1; }
+        .label { @apply text-sm font-medium mb-1; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+<div class="max-w-4xl mx-auto p-6 bg-white shadow-md">
+    <form action="/submit" method="POST" enctype="multipart/form-data">
+    <!-- Logo y Encabezado -->
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <img src="/static/img.png" alt="Logo" class="h-14">
+            </div>
+        </div>
+        <div class="border-b border-sky-200 mb-6"></div>
+        <h1 class="text-3xl font-bold mb-6 text-center">Solicitud de Empleo</h1>
+
+        <!-- Datos Personales -->
+        <section class="mb-8">
+            <h2 class="text-base font-semibold text-gray-700 mb-4 border-b border-gray-200 pb-1">Datos Personales</h2>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-4">
+                <!-- Columna de datos personales (2/3) -->
+                <div class="md:col-span-2 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Nombres</label>
+                            <input type="text" name="first_name" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none only-letters" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Apellidos</label>
+                            <input type="text" name="last_name" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none only-letters" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Lugar de Nacimiento</label>
+                        <input type="text" name="place_of_birth" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none only-letters" />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Fecha de Nacimiento</label>
+                            <input type="date" name="date_of_birth" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Edad</label>
+                            <input type="number" name="age" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Dirección Completa</label>
+                        <input type="text" name="address" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none" />
+                    </div>
+                </div>
+
+                <!-- Columna de fotografía (1/3) -->
+                <div id="photo-section"
+                     class="flex flex-col items-center justify-center border-2 border-sky-300 rounded-md px-4 py-6 h-full bg-white shadow-sm min-h-[250px]">
+
+                    <span class="text-sm font-semibold text-gray-700 mb-3">Fotografía</span>
+
+                    <!-- Imagen -->
+                    <img id="preview"
+                         src="/static/default-user.png"
+                         class="w-[200px] h-[200px] object-cover border-2 border-sky-300 rounded-full shadow-md hidden"
+                         alt="Vista previa" />
+
+                    <!-- Zona que se ocultará -->
+                    <div id="upload-controls" class="flex flex-col items-center">
+                        <label for="photo-input"
+                               class="bg-sky-500 hover:bg-sky-600 text-white text-sm px-4 py-1.5 rounded-md cursor-pointer transition-all duration-200">
+                            Seleccionar archivo
+                        </label>
+
+                        <input id="photo-input" type="file" name="photo" accept="image/*"
+                               onchange="previewAndHideInput(event)" class="hidden" />
+
+                        <p class="text-xs text-gray-500 mt-2 text-center">Formatos permitidos: JPG, PNG, HEIC</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Estado Civil:</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <label class="inline-flex items-center space-x-2">
+                        <input type="radio" name="marital_status" value="Soltero" />
+                        <span class="text-sm">Soltero(a)</span>
+                    </label>
+                    <label class="inline-flex items-center space-x-2">
+                        <input type="radio" name="marital_status" value="Casado" />
+                        <span class="text-sm">Casado(a)</span>
+                    </label>
+                    <label class="inline-flex items-center space-x-2">
+                        <input type="radio" name="marital_status" value="Viudo" />
+                        <span class="text-sm">Viudo(a)</span>
+                    </label>
+                    <label class="inline-flex items-center space-x-2">
+                        <input type="radio" name="marital_status" value="Divorciado" />
+                        <span class="text-sm">Divorciado(a)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Género:</label>
+                <div class="flex space-x-6">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="gender" value="Femenino" />
+                        <span class="ml-2 text-sm">Femenino</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="gender" value="Masculino" />
+                        <span class="ml-2 text-sm">Masculino</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Nacionalidad</label>
+                    <input type="text" name="nacionality" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none only-letters" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">DNI</label>
+                    <input type="text" name="dni" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none only-numbers" />
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Teléfono Residencia</label>
+                    <input type="text" name="home_phone" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none only-numbers" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Teléfono Celular</label>
+                    <input type="text" name="mobile_phone" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none only-numbers" />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Correo Electrónico</label>
+                <input type="email" name="email" class="w-full border-b border-gray-400 px-1 py-1 focus:outline-none" />
+            </div>
+        </section>
+
+        <script>
+            function previewAndHideInput(event) {
+                const input = event.target;
+                const preview = document.getElementById('preview');
+                const uploadControls = document.getElementById('upload-controls');
+                const photoLabel = document.getElementById('photo-label');
+                const photoSection = document.getElementById('photo-section');
+                const file = input.files[0];
+
+                if (file && file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.classList.remove("hidden");
+                        uploadControls.classList.add("hidden");
+                        photoLabel.classList.add("hidden");
+
+                        // Quitamos bordes al contenedor
+                        photoSection.classList.remove("border-2", "border-sky-300", "rounded-md", "py-6" , "text-sm font-semibold text-gray-700 mb-3");
+                        photoSection.classList.add("p-0");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function triggerFileInput() {
+                document.getElementById('photo-input').click();
+            }
+        </script>
+
+
+
+
+        <!-- Datos Familiares -->
+        <section class="mb-8">
+            <h2 class="text font-semibold mb-2 border-b border-gray-300">Datos Familiares</h2>
+
+            <!-- Información de cónyuge, padre y madre -->
+            <div class="space-y-4">
+                <!-- Fila 1: Cónyuge -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                    <div class="flex items-center gap-2">
+                        <label for="spouse_name" class="text-sm font-medium">Nombre del Cónyuge:</label>
+                        <input type="text" name="spouse_name" id="spouse_name"
+                               class="border-b border-gray-400 focus:outline-none px-2 py-1 w-48 only-letters" />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="spouse_phone" class="text-sm font-medium">Teléfono:</label>
+                        <input type="text" name="spouse_phone" id="spouse_phone"
+                               class="border-b border-gray-400 focus:outline-none px-2 py-1 w-48 only-numbers" />
+                    </div>
+                </div>
+
+                <!-- Fila 2: Padre -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                    <div class="flex items-center gap-2">
+                        <label for="father_name" class="text-sm font-medium">Nombre del Padre:</label>
+                        <input type="text" name="father_name" id="father_name"
+                               class="border-b border-gray-400 focus:outline-none px-2 py-1 w-48 only-letters" />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="father_phone" class="text-sm font-medium">Teléfono:</label>
+                        <input type="text" name="father_phone" id="father_phone"
+                               class="border-b border-gray-400 focus:outline-none px-2 py-1 w-48 only-numbers" />
+                    </div>
+                </div>
+
+                <!-- Fila 3: Madre -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                    <div class="flex items-center gap-2">
+                        <label for="mother_name" class="text-sm font-medium">Nombre de la Madre:</label>
+                        <input type="text" name="mother_name" id="mother_name"
+                               class="border-b border-gray-400 focus:outline-none px-2 py-1 w-48 only-letters" />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="mother_phone" class="text-sm font-medium">Teléfono:</label>
+                        <input type="text" name="mother_phone" id="mother_phone"
+                               class="border-b border-gray-400 focus:outline-none px-2 py-1 w-48 only-numbers" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Hijos -->
+            <div class="mt-6">
+                <h3 class="text-sm font-medium mb-2">Hijos:</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-center border border-gray-300">
+                        <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-2 border">Nombre</th>
+                            <th class="px-4 py-2 border">Fecha de Nacimiento</th>
+                            <th class="px-2 py-2 border w-16"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="children-rows">
+                        <tr>
+                            <td class="px-4 py-2 border">
+                                <input type="text" name="children_name[]" class="input text-center only-letters">
+                            </td>
+                            <td class="px-4 py-2 border">
+                                <input type="date" name="children_birthdate[]" class="input text-center">
+                            </td>
+                            <td class="px-2 py-2 border">
+                                <button type="button" class="text-white bg-white-400 hover:bg-sky-300 px-2 py-1 rounded remove-emergency">🗑️</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-2 text-right">
+                        <button type="button" id="add-child" class="text-sm text-white bg-sky-400 hover:bg-sky-600 px-3 py-1 rounded">
+                            + Agregar hijo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.getElementById('add-child').addEventListener('click', () => {
+                    const table = document.getElementById('children-rows');
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td class="px-4 py-2 border">
+                    <input type="text" name="children_name[]" class="input text-center only-letters">
+                </td>
+                <td class="px-4 py-2 border">
+                    <input type="date" name="children_birthdate[]" class="input text-center">
+                </td>
+                <td class="px-2 py-2 border">
+                    <button type="button" class="text-white bg-white-400 hover:bg-sky-300 px-2 py-1 rounded remove-emergency">🗑️</button>
+                </td>
+            `;
+                    table.appendChild(row);
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('remove-emergency')) {
+                        e.target.closest('tr').remove();
+                    }
+                });
+            </script>
+        </section>
+
+
+        <section class="mb-8">
+            <h2 class="text-base font-semibold text-gray-700 mb-3 border-b border-gray-200 pb-1">Formación Académica</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full border border-gray-300 text-sm">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-2 py-1">Nivel</th>
+                        <th class="border px-2 py-1">Institución</th>
+                        <th class="border px-2 py-1">Lugar</th>
+                        <th class="border px-2 py-1">Título</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="font-bold px-4 py-2 border">Secundaria</td>
+                        <td class="border px-2 py-1"><input type="text" name="education_institution_1" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="education_place_1" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="education_title_1" class="w-full border-none outline-none" /></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold px-4 py-2 border">Educación Superior</td>
+                        <td class="border px-2 py-1"><input type="text" name="education_institution_2" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="education_place_2" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="education_title_2" class="w-full border-none outline-none" /></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold px-4 py-2 border">Otros</td>
+                        <td class="border px-2 py-1"><input type="text" name="education_institution_3" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="education_place_3" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="education_title_3" class="w-full border-none outline-none" /></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text font-semibold mb-4">Habilidades y Certificados</h2>
+
+            <!-- Certificados Profesionales -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2">Certificados Profesionales:</label>
+                <div id="certifications-container" class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="certifications[]" class="input w-full" placeholder="Ej. Curso de Excel Avanzado">
+                        <button type="button" id="add-cert" class="text-white bg-sky-400 hover:bg-sky-600 px-3 py-1 rounded">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hobbies u otras habilidades -->
+            <div>
+                <label class="block text-sm font-medium mb-2">Hobbies u otras habilidades:</label>
+                <div id="skills-container" class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="hobbies_skills[]" class="input w-full" placeholder="Ej. Diseño gráfico, tocar guitarra">
+                        <button type="button" id="add-skill" class="text-white bg-sky-400 hover:bg-sky-600 px-3 py-1 rounded">+</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const MAX_ITEMS = 3;
+
+                function setupDynamicFields(containerId, inputName, placeholder, addBtnId) {
+                    const container = document.getElementById(containerId);
+                    const addBtn = document.getElementById(addBtnId);
+
+                    const updateAddButtonVisibility = () => {
+                        const count = container.querySelectorAll('input').length;
+                        addBtn.style.display = count >= MAX_ITEMS ? 'none' : 'inline-block';
+                    };
+
+                    addBtn.addEventListener('click', () => {
+                        const count = container.querySelectorAll('input').length;
+                        if (count >= MAX_ITEMS) return;
+
+                        const div = document.createElement('div');
+                        div.className = "flex items-center gap-2";
+
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.name = inputName;
+                        input.placeholder = placeholder;
+                        input.className = "input w-full";
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = "text-white bg-sky-400 hover:bg-sky-300 px-3 py-1 rounded";
+                        removeBtn.textContent = "🗑️";
+                        removeBtn.onclick = () => {
+                            div.remove();
+                            updateAddButtonVisibility();
+                        };
+
+                        div.appendChild(input);
+                        div.appendChild(removeBtn);
+                        container.appendChild(div);
+
+                        updateAddButtonVisibility();
+                    });
+
+                    updateAddButtonVisibility();
+                }
+
+                setupDynamicFields('certifications-container', 'certifications[]', 'Ej. Curso de WordPress', 'add-cert');
+                setupDynamicFields('skills-container', 'hobbies_skills[]', 'Ej. Ilustración digital', 'add-skill');
+            });
+        </script>
+
+
+        <section class="mb-8">
+            <h2 class="text-base font-semibold text-gray-700 mb-3 border-b border-gray-200 pb-1">Experiencia Laboral</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full border border-gray-300 text-sm" id="experience-table">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-2 py-1">Empresa</th>
+                        <th class="border px-2 py-1">Ingreso</th>
+                        <th class="border px-2 py-1">Salida</th>
+                        <th class="border px-2 py-1">Puesto</th>
+                        <th class="border px-2 py-1">Último Salario</th>
+                        <th class="border px-2 py-1">Motivo de Salida</th>
+                        <th class="border px-2 py-1 text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="experience-body">
+                    <tr>
+                        <td class="border px-2 py-1"><input type="text" name="empresa[]" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="date" name="ingreso[]" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="date" name="salida[]" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="puesto[]" class="w-full border-none outline-none only-letters" /></td>
+                        <td class="border px-2 py-1">
+                            <div class="flex items-center gap-2">
+                                <select name="salario_moneda[]" class="border-b border-gray-300 outline-none text-sm px-1 py-0.5">
+                                    <option value="L">L</option>
+                                    <option value="$">$</option>
+                                </select>
+                                <input type="number" name="salario[]" step="0.01" class="w-full border-none outline-none px-1 py-0.5" />
+                            </div>
+                        </td>
+
+                        <td class="border px-2 py-1"><input type="text" name="motivo_salida[]" class="w-full border-none outline-none only-letters" /></td>
+                        <td class="border px-2 py-1 text-center">
+                            <button type="button" class="text-white bg-white-400 hover:bg-sky-300 px-2 py-1 rounded remove-emergency">🗑️</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mt-2 text-right">
+                    <button type="button" id="add-experience" class="bg-sky-400 hover:bg-sky-600 text-white px-3 py-1 rounded">
+                        + Agregar experiencia
+                    </button>
+                </div>
+            </div>
+
+            <!-- Script con lógica completa -->
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const MAX_ROWS = 3;
+                    const experienceBody = document.getElementById("experience-body");
+                    const addBtn = document.getElementById("add-experience");
+
+                    function updateAddButton() {
+                        addBtn.style.display = experienceBody.children.length >= MAX_ROWS ? 'none' : 'inline-block';
+                    }
+
+                    function createRow() {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                    <td class="border px-2 py-1"><input type="text" name="empresa[]" class="w-full border-none outline-none" /></td>
+                    <td class="border px-2 py-1"><input type="date" name="ingreso[]" class="w-full border-none outline-none" /></td>
+                    <td class="border px-2 py-1"><input type="date" name="salida[]" class="w-full border-none outline-none" /></td>
+                    <td class="border px-2 py-1"><input type="text" name="puesto[]" class="w-full border-none outline-none only-letters" /></td>
+                    <td class="border px-2 py-1">
+                    <div class="flex items-center gap-2">
+                        <select name="salario_moneda[]" class="border-b border-gray-300 outline-none text-sm px-1 py-0.5">
+                            <option value="L">L</option>
+                            <option value="$">$</option>
+                        </select>
+                        <input type="number" name="salario[]" step="0.01" class="w-full border-none outline-none px-1 py-0.5"" />
+                         </div>
+                     </td>
+
+                    <td class="border px-2 py-1"><input type="text" name="motivo_salida[]" class="w-full border-none outline-none only-letters" /></td>
+                    <td class="border px-2 py-1 text-center">
+                       <button type="button" class="text-white bg-white-400 hover:bg-sky-300 px-2 py-1 rounded remove-emergency">🗑️</button>
+                    </td>
+                `;
+                        experienceBody.appendChild(tr);
+                        updateAddButton();
+                    }
+
+                    // Añadir fila
+                    addBtn.addEventListener("click", () => {
+                        if (experienceBody.children.length < MAX_ROWS) {
+                            createRow();
+                        }
+                    });
+
+                    // Eliminar fila
+                    experienceBody.addEventListener("click", (e) => {
+                        if (e.target.classList.contains("remove-row")) {
+                            const row = e.target.closest("tr");
+                            if (experienceBody.children.length > 1) {
+                                row.remove();
+                                updateAddButton();
+                            }
+                        }
+                    });
+
+                    // Validación de letras
+                    experienceBody.addEventListener("input", (e) => {
+                        if (e.target.classList.contains("only-letters")) {
+                            e.target.value = e.target.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+                        }
+                    });
+
+                    updateAddButton();
+                });
+            </script>
+        </section>
+
+
+        <!-- Referencias -->
+        <section class="mb-8">
+            <h2 class="text font-semibold mb-4">Referencias (2)</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full border border-gray-300 text-sm">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-2 py-1">Nombre</th>
+                        <th class="border px-2 py-1">Dirección</th>
+                        <th class="border px-2 py-1">Teléfono</th>
+                        <th class="border px-2 py-1">Cargo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="border px-2 py-1"><input type="text" name="ref_full_name" class="w-full border-none outline-none only-letters" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="ref_address" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="ref_phone" class="w-full border-none outline-none only-numbers" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="ref_position" class="w-full border-none outline-none only-letters" /></td>
+                    </tr>
+                    <tr>
+                        <td class="border px-2 py-1"><input type="text" name="ref_full_name" class="w-full border-none outline-none only-letters" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="ref_address" class="w-full border-none outline-none" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="ref_phone" class="w-full border-none outline-none only-numbers" /></td>
+                        <td class="border px-2 py-1"><input type="text" name="ref_position" class="w-full border-none outline-none only-letters" /></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Información Médica -->
+        <section class="mb-8">
+            <h2 class="text font-semibold mb-4">Información Médica</h2>
+            <div class="border-b border-gray-200 mb-6"></div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border border-gray-300">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2 border">Pregunta</th>
+                        <th class="px-4 py-2 border">Sí / No</th>
+                        <th class="px-4 py-2 border">Especifique</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Pregunta 1 -->
+                    <tr>
+                        <td class="px-4 py-2 border">¿Padece de alguna enfermedad física?</td>
+                        <td class="px-4 py-2 border">
+                            <select name="illness_answer" class="input toggle-detail" data-target="illness_detail">
+                                <option value="">Seleccione</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td class="px-4 py-2 border">
+                            <input type="text" name="illness_detail" id="illness_detail" class="input hidden" placeholder="Especifique">
+                        </td>
+                    </tr>
+
+                    <!-- Pregunta 2 -->
+                    <tr>
+                        <td class="px-4 py-2 border">¿Es alérgico a algún material o medicamento?</td>
+                        <td class="px-4 py-2 border">
+                            <select name="allergy_answer" class="input toggle-detail" data-target="allergy_detail">
+                                <option value="">Seleccione</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td class="px-4 py-2 border">
+                            <input type="text" name="allergy_detail" id="allergy_detail" class="input hidden" placeholder="Especifique">
+                        </td>
+                    </tr>
+
+                    <!-- Pregunta 3 -->
+                    <tr>
+                        <td class="px-4 py-2 border">¿Toma algún medicamento diario?</td>
+                        <td class="px-4 py-2 border">
+                            <select name="medication_answer" class="input toggle-detail" data-target="medication_detail">
+                                <option value="">Seleccione</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td class="px-4 py-2 border">
+                            <input type="text" name="medication_detail" id="medication_detail" class="input hidden" placeholder="Especifique">
+                        </td>
+                    </tr>
+
+                    <!-- Pregunta 4 -->
+                    <tr>
+                        <td class="px-4 py-2 border">¿Ha sido operado o ha tenido alguna fractura?</td>
+                        <td class="px-4 py-2 border">
+                            <select name="surgery_answer" class="input toggle-detail" data-target="surgery_detail">
+                                <option value="">Seleccione</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td class="px-4 py-2 border">
+                            <input type="text" name="surgery_detail" id="surgery_detail" class="input hidden" placeholder="Especifique">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <script>
+                document.querySelectorAll('.toggle-detail').forEach(select => {
+                    select.addEventListener('change', function () {
+                        const targetId = this.dataset.target;
+                        const targetInput = document.getElementById(targetId);
+
+                        if (this.value === "Sí") {
+                            targetInput.classList.remove("hidden");
+                            targetInput.setAttribute("required", "true");
+                        } else {
+                            targetInput.classList.add("hidden");
+                            targetInput.removeAttribute("required");
+                            targetInput.value = "";
+                        }
+                    });
+                });
+            </script>
+        </section>
+
+        <!-- Solicitud -->
+        <section class="mb-8">
+            <h2 class="text font-semibold mb-4">Solicitud</h2>
+            <div class="border-b border-gray-200 mb-6"></div>
+
+            <!-- Línea 1 -->
+            <div class="flex flex-wrap gap-6 mb-4 items-center">
+                <label class="text-sm font-medium">Puesto Solicitado:</label>
+                <input name="applied_position" class="border-b border-gray-400 outline-none px-2 py-1 w-60 only-letters">
+
+                <label class="text-sm font-medium">Fecha de Inicio:</label>
+                <input name="job_start_date" type="date" class="border-b border-gray-400 outline-none px-2 py-1 w-44">
+            </div>
+
+            <!-- Línea 2 -->
+            <div class="flex flex-wrap gap-6 mb-4 items-center">
+                <label class="text-sm font-medium">Como se enteró de la posición:</label>
+                <input name="information_source" class="border-b border-gray-400 outline-none px-2 py-1 w-64 only-letters only-letters">
+
+                <label class="text-sm font-medium">Salario:</label>
+                <div class="flex items-center gap-2">
+                    <select name="salary_currency" class="border-b border-gray-400 outline-none px-1 py-1 text-sm text-gray-700">
+                        <option value="L">L</option>
+                        <option value="$">$</option>
+                    </select>
+                    <input name="expected_salary" type="number" step="0.01"
+                           class="border-b border-gray-400 outline-none px-2 py-1 w-28" placeholder="Cantidad">
+                </div>
+
+
+                <!-- Consentimiento -->
+            <div class="bg-white border border-sky-400 p-4 rounded-lg shadow-sm mb-4">
+                <!-- Campo para firma del solicitante (autocompletado) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Firma del Solicitante</label>
+                    <input type="text" name="signature" id="signature-name"
+                           placeholder="Se completa al aceptar los términos"
+                           class="w-full border-b border-sky-300 bg-gray-100 px-2 py-1 text-gray-700 focus:outline-none cursor-not-allowed"
+                           readonly />
+                </div>
+
+                <!-- Checkbox-->
+                <label for="consent-check" class="flex items-start space-x-3 cursor-pointer select-none">
+                    <input
+                            type="checkbox"
+                            id="consent-check"
+                            class="accent-sky-400 mt-1 shrink-0 w-5 h-5"
+                    />
+
+                    <div class="relative w-5 h-5 flex items-center justify-center pointer-events-none">
+                        <svg
+                                class="w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200 absolute"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+
+                    <span class="text-sm text-gray-800 leading-relaxed font-sans">
+                    Declaro que toda la información proporcionada es verdadera y autorizo su verificación.
+                    Al marcar esta casilla, acepto firmar digitalmente esta solicitud.
+                  </span>
+                </label>
+
+                <!-- Fecha, hora y lugar automáticos -->
+                <div class="mt-4 grid md:grid-cols-2 gap-4" id="signature-fields" style="display: none;">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha y Hora</label>
+                        <input type="text" name="signature_datetime" readonly id="signature-datetime"
+                               class="w-full border-b border-sky-400 bg-gray-100 px-3 py-2 text-gray-700 cursor-not-allowed rounded-sm focus:outline-none" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Lugar</label>
+                        <input type="text" name="signature_place" readonly id="signature-place"
+                               class="w-full border-b border-sky-400 bg-gray-100 px-3 py-2 text-gray-700 cursor-not-allowed rounded-sm focus:outline-none" />
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const checkbox = document.getElementById("consent-check");
+                const signatureFields = document.getElementById("signature-fields");
+                const nameField = document.querySelector("[name='first_name']");
+                const lastNameField = document.querySelector("[name='last_name']");
+                const signatureInput = document.getElementById("signature-name");
+                const signatureDatetime = document.getElementById("signature-datetime");
+                const signaturePlace = document.getElementById("signature-place");
+
+                checkbox.addEventListener("change", () => {
+                    if (checkbox.checked) {
+                        const now = new Date();
+                        const fullName = `${nameField?.value || ''} ${lastNameField?.value || ''}`.trim();
+
+                        signatureInput.value = fullName || "[Nombre no proporcionado]";
+                        signatureDatetime.value = now.toLocaleString('es-HN');
+                        signatureFields.style.display = "grid";
+
+                        // Mostrar que está obteniendo la ubicación
+                        signaturePlace.readOnly = true;
+                        signaturePlace.placeholder = "Detectando ubicación...";
+                        signaturePlace.value = "";
+
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(async (position) => {
+                                try {
+                                    const lat = position.coords.latitude;
+                                    const lon = position.coords.longitude;
+
+                                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`, {
+                                        headers: {
+                                            "User-Agent": "Mozilla/5.0",
+                                            "Accept-Language": "es"
+                                        }
+                                    });
+
+                                    const data = await response.json();
+
+                                    if (data && data.address) {
+                                        const city = data.address.city || data.address.town || data.address.village || '';
+                                        const country = data.address.country || '';
+                                        signaturePlace.value = `${city}, ${country}`;
+                                        signaturePlace.readOnly = true;
+                                        signaturePlace.classList.remove("cursor-not-allowed");
+                                    } else {
+                                        throw new Error("Dirección no encontrada");
+                                    }
+
+                                } catch (error) {
+                                    signaturePlace.value = "";
+                                    signaturePlace.placeholder = "Ubicación no disponible (puede escribirla)";
+                                    signaturePlace.readOnly = false;
+                                    signaturePlace.classList.remove("cursor-not-allowed");
+                                }
+                            }, (error) => {
+                                signaturePlace.value = "";
+                                signaturePlace.placeholder = "Permiso denegado (puede escribirla)";
+                                signaturePlace.readOnly = false;
+                                signaturePlace.classList.remove("cursor-not-allowed");
+                            });
+                        } else {
+                            signaturePlace.value = "";
+                            signaturePlace.placeholder = "Navegador no compatible (puede escribirlo)";
+                            signaturePlace.readOnly = false;
+                            signaturePlace.classList.remove("cursor-not-allowed");
+                        }
+
+                    } else {
+                        signatureFields.style.display = "none";
+                        signatureInput.value = "";
+                        signatureDatetime.value = "";
+                        signaturePlace.value = "";
+                        signaturePlace.placeholder = "Lugar";
+                        signaturePlace.readOnly = true;
+                    }
+                });
+            });
+        </script>
+
+
+        <!-- Emergencia -->
+        <section class="mb-8">
+            <h2 class="text font-semibold mb-4">En caso de emergencia, ¿a quién contactar?</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border border-gray-300">
+                    <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2 border">Nombre</th>
+                        <th class="px-4 py-2 border">Dirección</th>
+                        <th class="px-4 py-2 border">Teléfono</th>
+                        <th class="px-4 py-2 border">Parentesco</th>
+                        <th class="px-4 py-2 border text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="emergency-body">
+                    <tr>
+                        <td class="px-2 py-2">
+                            <input type="text" name="emergency_name[]" class="w-full border-b  outline-none px-1 only-letters">
+                        </td>
+                        <td class="px-2 py-2">
+                            <input type="text" name="emergency_address[]" class="w-full border-b outline-none px-1">
+                        </td>
+                        <td class="px-2 py-2">
+                            <input type="text" name="emergency_phone[]" class="w-full border-b outline-none px-1 only-numbers">
+                        </td>
+                        <td class="px-2 py-2">
+                            <input type="text" name="emergency_relation[]" class="w-full border-b outline-none px-1 only-letters">
+                        </td>
+                        <td class="px-2 py-2 text-center">
+                            <button type="button" class="text-white bg-white-400 hover:bg-sky-300 px-2 py-1 rounded remove-emergency">🗑️</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mt-2 text-right">
+                    <button id="add-emergency" type="button" class="bg-sky-400 hover:bg-sky-600 text-white px-4 py-1 rounded">+ Añadir Contacto</button>
+                </div>
+            </div>
+
+            <!-- Script dentro de la sección -->
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const MAX_ROWS = 3;
+                    const tbody = document.getElementById('emergency-body');
+                    const addBtn = document.getElementById('add-emergency');
+
+                    function updateAddButton() {
+                        addBtn.style.display = tbody.rows.length >= MAX_ROWS ? 'none' : 'inline-block';
+                    }
+
+                    function createRow() {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td class="px-2 py-2">
+                        <input type="text" name="emergency_name[]" class="w-full border-b  outline-none px-1 only-letters">
+                    </td>
+                    <td class="px-2 py-2">
+                        <input type="text" name="emergency_address[]" class="w-full border-b outline-none px-1">
+                    </td>
+                    <td class="px-2 py-2">
+                        <input type="text" name="emergency_phone[]" class="w-full border-b outline-none px-1 only-numbers">
+                    </td>
+                    <td class="px-2 py-2">
+                        <input type="text" name="emergency_relation[]" class="w-full border-b outline-none px-1 only-letters">
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                       <button type="button" class="text-white bg-white-400 hover:bg-sky-300 px-2 py-1 rounded remove-emergency">🗑️</button>
+                    </td>
+                `;
+                        row.querySelector('.remove-emergency').addEventListener('click', () => {
+                            row.remove();
+                            updateAddButton();
+                        });
+                        tbody.appendChild(row);
+                    }
+
+                    addBtn.addEventListener('click', () => {
+                        if (tbody.rows.length < MAX_ROWS) {
+                            createRow();
+                            updateAddButton();
+                        }
+                    });
+
+                    tbody.querySelectorAll('.remove-emergency').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.target.closest('tr').remove();
+                            updateAddButton();
+                        });
+                    });
+                });
+            </script>
+        </section>
+
+
+        <!-- Validaciones -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const onlyLettersInputs = document.querySelectorAll('.only-letters');
+                const onlyNumbersInputs = document.querySelectorAll('.only-numbers');
+
+                onlyLettersInputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+                    });
+                });
+
+                onlyNumbersInputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        input.value = input.value.replace(/[^0-9]/g, '');
+                    });
+                });
+            });
+        </script>
+
+
+        <div class="mt-32 border-b border-sky-200 mb-6"></div>
+        <div class="text-right text-sm text-cyan-500 leading-tight hidden md:block">
+            Centro Comercial Los Castaños<br>
+            Blvd del Norte (Hacia Pto Cortés)<br>
+            San Pedro Sula, Cortés<br> Honduras<br>
+            Tel: 2580-2100
+        </div>
+
+        
+        <div class="text-center">
+            <button type="submit" class="mt-6 px-6 py-2 bg-sky-400 text-white font-semibold rounded hover:bg-sky-500">
+                Enviar Solicitud
+            </button>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>

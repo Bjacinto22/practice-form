@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Centro de Correos RRHH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#1e3a8a',
+                        soft: '#e0f2fe',
+                        slateDark: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<header class="flex justify-between items-center p-4 bg-white dark:bg-slate-900 shadow-md">
+    <img src="/static/img.png" alt="Logo" class="h-10" />
+    <button onclick="location.href='dashboard.html'" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary">
+        ⬅️ <span id="backText">Volver al Dashboard</span>
+    </button>
+</header>
+
+<body
+        class="bg-gradient-to-br from-soft to-white dark:from-slate-900 dark:to-slate-800 text-slate-800 dark:text-white min-h-screen font-sans">
+<main class="max-w-6xl mx-auto p-6 space-y-10">
+    <header class="flex justify-between items-center">
+        <h1 class="text-4xl font-bold text-primary" id="mainTitle">✉️ Centro de Correos Personalizados</h1>
+        <button id="toggleLang" class="bg-primary text-white px-4 py-2 rounded-xl shadow hover:bg-secondary">🌐
+            English</button>
+    </header>
+
+    <section class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-xl">
+        <h2 class="text-2xl font-semibold mb-4 text-primary" id="sectionTitle">Plantillas Profesionales</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Contratación -->
+            <div class="p-4 bg-soft dark:bg-slate-800 rounded-xl shadow hover:shadow-md">
+                <h3 class="font-bold text-lg mb-2 text-secondary" data-i18n="hireTitle">📢 Contratación Confirmada</h3>
+                <p class="text-sm mb-3" data-i18n="hireDesc">Informa al team lead que un nuevo colaborador ha sido
+                    contratado.</p>
+                <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm" onclick="fillTemplate('hire')" data-i18n="hireBtn">📨
+                    Usar plantilla</button>
+            </div>
+
+            <!-- Cumpleaños -->
+            <div class="p-4 bg-soft dark:bg-slate-800 rounded-xl shadow hover:shadow-md">
+                <h3 class="font-bold text-lg mb-2 text-secondary" data-i18n="bdayTitle">🎂 Calendario de
+                    Cumpleaños</h3>
+                <p class="text-sm mb-3" data-i18n="bdayDesc">Arma un calendario personalizado con fechas y envía saludos
+                    automáticos.</p>
+                <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm" onclick="fillTemplate('bday')" data-i18n="bdayBtn">📨
+                    Ver calendario</button>
+            </div>
+
+            <!-- Comunicado importante -->
+            <div class="p-4 bg-soft dark:bg-slate-800 rounded-xl shadow hover:shadow-md">
+                <h3 class="font-bold text-lg mb-2 text-secondary" data-i18n="infoTitle">📣 Comunicado
+                    Importante</h3>
+                <p class="text-sm mb-3" data-i18n="infoDesc">Envía mensajes relevantes a toda la empresa con diseño
+                    profesional.</p>
+                <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm" onclick="fillTemplate('info')" data-i18n="infoBtn">📨
+                    Crear comunicado</button>
+            </div>
+
+            <!-- Desvinculación laboral -->
+            <div class="p-4 bg-soft dark:bg-slate-800 rounded-xl shadow hover:shadow-md">
+                <h3 class="font-bold text-lg mb-2 text-secondary" data-i18n="exitTitle">👋 Desvinculación
+                    Laboral</h3>
+                <p class="text-sm mb-3" data-i18n="exitDesc">Informa profesionalmente la salida de un
+                    colaborador.</p>
+                <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm" onclick="fillTemplate('exit')"data-i18n="exitBtn">📨
+                    Generar mensaje</button>
+            </div>
+
+            <!-- Incapacidad / Accidente -->
+            <div class="p-4 bg-soft dark:bg-slate-800 rounded-xl shadow hover:shadow-md">
+                <h3 class="font-bold text-lg mb-2 text-secondary" data-i18n="healthTitle">🩺 Incapacidad / Accidente
+                </h3>
+                <p class="text-sm mb-3" data-i18n="healthDesc">Envía una notificación compasiva sobre la ausencia por
+                    salud.</p>
+
+                <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm"
+                        onclick="fillTemplate('health')" data-i18n="healthBtn">📨 Notificar al equipo</button>
+
+            </div>
+
+<!--            <div class="p-4 bg-soft dark:bg-slate-800 rounded-xl shadow hover:shadow-md">-->
+<!--                <h3 class="font-bold text-lg mb-2 text-secondary" >+-->
+<!--                </h3>-->
+
+<!--                <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm"-->
+<!--                        onclick="fillTemplate('health')" >+</button>-->
+
+<!--            </div>-->
+        </div>
+    </section>
+
+    <section class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-xl">
+        <h2 class="text-2xl font-semibold mb-4 text-primary" id="customTitle">✍️ Personalizar Plantilla</h2>
+
+        <form id="emailForm" class="space-y-4" onsubmit="handleSubmit(event)">
+            <input id="emailTo" type="email" placeholder="Correo del destinatario"
+                   class="w-full p-3 border border-primary rounded-xl dark:bg-slate-800" required />
+            <input id="emailSubject" type="text" placeholder="Asunto del mensaje"
+                   class="w-full p-3 border border-primary rounded-xl dark:bg-slate-800" required />
+            <textarea id="emailBody" rows="6" placeholder="Mensaje personalizado..."
+                      class="w-full p-3 border border-primary rounded-xl dark:bg-slate-800"></textarea>
+
+            <label for="fileInput" class="block font-medium mt-4 text-secondary" id="attachmentLabel">📎 Adjuntar
+                imagen (opcional)</label>
+            <input id="fileInput" type="file" accept="image/*" class="block mt-2" />
+
+            <button type="submit" id="sendBtn"
+                    class="bg-primary text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-secondary"
+                    data-i18n="sendBtn">📤 Enviar correo</button>
+        </form>
+    </section>
+</main>
+
+<script>
+    // Plantillas en ambos idiomas
+    const templates = {
+        hire: {
+            es: {
+                subject: "Nueva contratación confirmada",
+                body: `Buen día,
+
+Nos complace informar que (Nombre del nuevo colaborador) ha sido oficialmente contratado para integrarse al equipo. Agradecemos su apoyo en el proceso de integración, así como cualquier orientación que pueda brindarle en esta etapa inicial.
+
+Saludos cordiales.`
+            },
+            en: {
+                subject: "New Hire Confirmation",
+                body: `Good morning,
+
+We are pleased to inform you that (Name of the new hire) has been officially hired to join the team. We appreciate your support during the onboarding process and any guidance you can provide during this initial phase..
+
+Kind regards.`
+            }
+        },
+        bday: {
+            es: {
+                subject: "🎉 Celebración de cumpleaños",
+                body: `Estimado equipo,
+
+Todo el equipo de [Nombre de la empresa] te desea un cumpleaños lleno de alegría, salud y muchos éxitos.
+
+¡Los esperamos para compartir un momento especial juntos!`
+            },
+            en: {
+                subject: "🎉 Birthday Celebration",
+                body: `Dear team,
+
+The entire team at [Company Name] wishes you a birthday filled with joy, good health, and much success.
+
+We hope you can join us to make this moment special!`
+            }
+        },
+        info: {
+            es: {
+                subject: "📣 Aviso importante",
+                body: `Feliz jueves a todos,
+
+Hoy de 9:00 a.m. a 11:00 a.m. el personal de la aseguradora estará disponible en la sala de conferencias para atender consultas sobre su seguro médico.`
+            },
+            en: {
+                subject: "📣 Important Notice",
+                body: `Happy Thursday,
+
+Today from 9:00 a.m. to 11:00 a.m., the insurance staff will be available in the second-floor conference room to assist with any medical insurance inquiries.`
+            }
+        },
+        exit: {
+            es: {
+                subject: "👋 Desvinculación laboral",
+                body: `Estimado equipo,
+
+Les informamos que a partir del día de hoy, (Nombre del colaborador) deja de formar parte de nuestra organización. Agradecemos profundamente las contribuciones realizadas durante su tiempo con nosotros y le deseamos éxito en sus próximos desafíos profesionales.
+
+Este tipo de transiciones son parte natural del ciclo organizacional y agradecemos su comprensión y profesionalismo ante esta comunicación.`
+            },
+            en: {
+                subject: "👋 Employee Departure",
+                body: `Dear team,
+
+We would like to inform you that as of today, (Name of the employee) is no longer part of our organization. We sincerely thank them for their contributions during their time with us and wish them the best in their future professional endeavors.
+
+These transitions are a natural part of organizational growth, and we appreciate your professionalism and understanding.`
+            }
+        },
+        health: {
+            es: {
+                subject: "🩺 Ausencia por salud",
+                body: `Buen día,
+
+Queremos informarles que (Nombre del colaborador) estará ausente temporalmente debido a una situación de salud relacionada con una (incapacidad médica / accidente). Agradecemos su comprensión y apoyo durante este período, manteniendo la empatía y el respeto hacia su proceso de recuperación.
+
+Les pedimos colaborar con los ajustes necesarios para asegurar la continuidad del trabajo mientras se gestiona su ausencia.`
+            },
+            en: {
+                subject: "🩺 Medical Leave Notification",
+                body: `Good morning,
+
+We would like to inform you that (Name of the employee) will be temporarily absent due to a (medical leave / accident). We appreciate your understanding and support during this time, and we ask that you extend empathy and respect as they focus on their recovery.
+
+Please collaborate with any necessary adjustments to ensure workflow continuity during their absence.`
+            }
+        }
+    };
+
+    // Traducciones para la UI
+    const translations = {
+        es: {
+            mainTitle: '✉️ Centro de Correos Personalizados',
+            sectionTitle: 'Plantillas Profesionales',
+            hireTitle: '📢 Contratación Confirmada',
+            hireDesc: 'Informa al team lead que un nuevo colaborador ha sido contratado.',
+            bdayTitle: '🎂 Calendario de Cumpleaños',
+            bdayDesc: 'Arma un calendario personalizado con fechas y envía saludos automáticos.',
+            infoTitle: '📣 Comunicado Importante',
+            infoDesc: 'Envía mensajes relevantes a toda la empresa con diseño profesional.',
+            exitTitle: '👋 Desvinculación Laboral',
+            exitDesc: 'Informa profesionalmente la salida de un colaborador.',
+            healthTitle: '🩺 Incapacidad / Accidente',
+            healthDesc: 'Envía una notificación compasiva sobre la ausencia por salud.',
+            customTitle: '✍️ Personalizar Plantilla',
+            emailTo: 'Correo del destinatario',
+            emailSubject: 'Asunto del mensaje',
+            emailBody: 'Mensaje personalizado...',
+            attachmentLabel: '📎 Adjuntar imagen (opcional)',
+            hireBtn: '📨 Usar plantilla',
+            bdayBtn: '📨 Ver calendario',
+            infoBtn: '📨 Crear comunicado',
+            exitBtn: '📨 Generar mensaje',
+            healthBtn: '📨 Notificar al equipo',
+            sendBtn: '📤 Enviar correo',
+            toggleLangBtn: '🌐 English'
+        },
+        en: {
+            mainTitle: '✉️ Custom Email Center',
+            sectionTitle: 'Professional Templates',
+            hireTitle: '📢 Hiring Confirmed',
+            hireDesc: 'Notify the team lead that a new employee has been hired.',
+            bdayTitle: '🎂 Birthday Calendar',
+            bdayDesc: 'Create a custom birthday calendar and send automatic greetings.',
+            infoTitle: '📣 Important Announcement',
+            infoDesc: 'Send company-wide messages with professional design.',
+            exitTitle: '👋 Employee Departure',
+            exitDesc: 'Professionally inform the team of an employee leaving.',
+            healthTitle: '🩺 Sick Leave / Accident',
+            healthDesc: 'Notify the team with compassion about a health-related absence.',
+            customTitle: '✍️ Customize Template',
+            emailTo: "Recipient's email",
+            emailSubject: 'Email subject',
+            emailBody: 'Personalized message...',
+            attachmentLabel: '📎 Attach image (optional)',
+            hireBtn: '📨 Use template',
+            bdayBtn: '📨 View calendar',
+            infoBtn: '📨 Create announcement',
+            exitBtn: '📨 Generate message',
+            healthBtn: '📨 Notify the team',
+            sendBtn: '📤 Send email',
+            toggleLangBtn: '🌐 Español'
+        }
+    };
+
+    // Estado actual del idioma
+    let currentLang = 'es';
+
+    // Función para llenar el formulario con la plantilla seleccionada
+    function fillTemplate(key) {
+        document.getElementById('emailSubject').value = templates[key][currentLang].subject;
+        document.getElementById('emailBody').value = templates[key][currentLang].body;
+    }
+
+    // Función para actualizar textos de la UI
+    function updateTexts() {
+        const t = translations[currentLang];
+
+        // Cambiar atributo lang del html
+        document.documentElement.lang = currentLang;
+
+        // Cambiar textos principales y placeholders
+        document.getElementById('mainTitle').textContent = t.mainTitle;
+        document.getElementById('sectionTitle').textContent = t.sectionTitle;
+
+        // Iterar todos los elementos con data-i18n para actualizar títulos y descripciones
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) el.textContent = t[key];
+        });
+
+        document.getElementById('customTitle').textContent = t.customTitle;
+        document.getElementById('emailTo').placeholder = t.emailTo;
+        document.getElementById('emailSubject').placeholder = t.emailSubject;
+        document.getElementById('emailBody').placeholder = t.emailBody;
+        document.getElementById('attachmentLabel').textContent = t.attachmentLabel;
+
+        // Cambiar texto del botón de cambio de idioma
+        document.getElementById('toggleLang').textContent = t.toggleLangBtn;
+    }
+
+    // Manejo del botón de cambio de idioma
+    document.getElementById('toggleLang').addEventListener('click', () => {
+        currentLang = currentLang === 'es' ? 'en' : 'es';
+        updateTexts();
+
+        // Opcional: limpiar el formulario cuando cambias idioma
+        // document.getElementById('emailForm').reset();
+    });
+
+    // Envío de formulario (simulado)
+    function handleSubmit(event) {
+        event.preventDefault();
+        const email = document.getElementById('emailTo').value.trim();
+        const subject = document.getElementById('emailSubject').value.trim();
+        const body = document.getElementById('emailBody').value.trim();
+
+        if (!email || !subject || !body) {
+            alert(currentLang === 'es' ? 'Por favor completa todos los campos.' : 'Please fill in all fields.');
+            return;
+        }
+
+        // Aquí puedes integrar el envío real de correo vía backend o API
+        alert((currentLang === 'es' ? 'Correo enviado a ' : 'Email sent to ') + email);
+
+        // Opcional: resetear formulario después de enviar
+        document.getElementById('emailForm').reset();
+    }
+
+    // Inicializar textos en español al cargar la página
+    updateTexts();
+</script>
+</body>
+
+</html>

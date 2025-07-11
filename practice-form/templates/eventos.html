@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestión de Eventos RRHH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#1e3a8a',
+                        soft: '#e0f2fe',
+                        slateDark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon svg {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: #0ea5e9;
+            pointer-events: none;
+        }
+
+        .input-icon input,
+        .input-icon textarea,
+        .input-icon select {
+            padding-left: 2.8rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-icon input:focus,
+        .input-icon textarea:focus,
+        .input-icon select:focus {
+            border-color: #0284c7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgb(14 165 233 / 0.3);
+        }
+
+        /* Modal backdrop */
+        #editModalBackdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+
+<body
+        class="bg-gradient-to-br from-soft to-white dark:from-slate-900 dark:to-slate-800 text-slate-800 dark:text-white min-h-screen font-sans flex flex-col">
+
+<header
+        class="flex justify-between items-center p-4 bg-white dark:bg-slate-900 shadow-md sticky top-0 z-50">
+    <img src="/static/img.png" alt="Logo" class="h-10" />
+    <div class="flex items-center gap-3">
+        <button onclick="location.href='dashboard.html'"
+                class="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-secondary transition flex items-center gap-2">
+            <span>⬅️</span> Volver al Dashboard
+        </button>
+        <button id="toggleLang"
+                class="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-secondary transition">🌐 English</button>
+        <button id="toggleDarkMode"
+                class="bg-secondary text-white px-3 py-2 rounded-lg shadow hover:bg-primary transition">🌓</button>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto p-6 flex-grow">
+    <h1 id="pageTitle" class="text-4xl font-extrabold text-primary mb-10 select-none">📅 Gestión de Eventos</h1>
+
+    <section
+            class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-xl max-w-3xl mx-auto mb-16 ring-1 ring-primary/20">
+        <h2 id="formTitle" class="text-2xl font-semibold mb-6 select-none">Crear nuevo evento</h2>
+        <form id="eventForm" class="space-y-6" autocomplete="off">
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M12 20h9" />
+                    <path d="M12 4v16" />
+                    <circle cx="12" cy="12" r="10" />
+                </svg>
+                <input type="text" id="eventName" name="eventName" placeholder="Nombre del evento" required
+                       class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold placeholder:text-primary/70 transition" />
+            </div>
+
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <input type="datetime-local" id="eventDateTime" name="eventDateTime" required
+                       class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition" />
+            </div>
+
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h9" />
+                </svg>
+                <textarea id="eventReason" name="eventReason" rows="3" placeholder="Motivo o descripción" required
+                          class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold resize-none transition"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                    <input type="number" id="eventBudget" name="eventBudget" min="0" step="0.01" placeholder="Presupuesto estimado (USD)"
+                           required
+                           class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition" />
+                </div>
+                <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M9 7v4" />
+                        <path d="M12 7v6" />
+                        <path d="M15 7v4" />
+                    </svg>
+                    <input type="number" id="eventAttendees" name="eventAttendees" min="0" placeholder="Personas interesadas"
+                           required
+                           class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition" />
+                </div>
+            </div>
+
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9 12h6" />
+                    <path d="M12 9v6" />
+                </svg>
+                <select id="eventStatus" name="eventStatus" required
+                        class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition">
+                    <option value="pendiente">Pendiente</option>
+                    <option value="realizado">Realizado</option>
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-primary hover:bg-secondary transition text-white font-semibold py-4 rounded-xl shadow-lg tracking-wide text-lg">
+                Guardar Evento
+            </button>
+        </form>
+    </section>
+
+    <section class="max-w-7xl mx-auto">
+        <h2 id="listTitle" class="text-3xl font-bold mb-8 select-none">Eventos creados</h2>
+        <div id="eventList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <section
+            class="max-w-7xl mx-auto mt-16 p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-xl text-slate-900 dark:text-white select-none">
+        <h3 id="statsTitle" class="text-2xl font-bold mb-6">Estadísticas</h3>
+        <p id="statsBudget" class="mb-3 text-lg font-semibold">Presupuesto total: $0.00</p>
+        <p id="statsAttendees" class="text-lg font-semibold">Personas interesadas total: 0</p>
+    </section>
+</main>
+
+<!-- Modal Edición -->
+<div id="editModal" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div id="editModalBackdrop" class="absolute inset-0"></div>
+    <div
+            class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 max-w-xl w-full max-h-[90vh] overflow-auto z-10">
+        <h3 id="editModalTitle" class="text-2xl font-bold mb-6 select-none">Editar Evento</h3>
+        <form id="editEventForm" class="space-y-6" autocomplete="off">
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M12 20h9" />
+                    <path d="M12 4v16" />
+                    <circle cx="12" cy="12" r="10" />
+                </svg>
+                <input type="text" id="editEventName" name="editEventName" placeholder="Nombre del evento" required
+                       class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold placeholder:text-primary/70 transition" />
+            </div>
+
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <input type="datetime-local" id="editEventDateTime" name="editEventDateTime" required
+                       class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition" />
+            </div>
+
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h9" />
+                </svg>
+                <textarea id="editEventReason" name="editEventReason" rows="3" placeholder="Motivo o descripción" required
+                          class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold resize-none transition"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                    <input type="number" id="editEventBudget" name="editEventBudget" min="0" step="0.01" placeholder="Presupuesto estimado (USD)"
+                           required
+                           class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition" />
+                </div>
+                <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M9 7v4" />
+                        <path d="M12 7v6" />
+                        <path d="M15 7v4" />
+                    </svg>
+                    <input type="number" id="editEventAttendees" name="editEventAttendees" min="0" placeholder="Personas interesadas"
+                           required
+                           class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition" />
+                </div>
+            </div>
+
+            <div class="input-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9 12h6" />
+                    <path d="M12 9v6" />
+                </svg>
+                <select id="editEventStatus" name="editEventStatus" required
+                        class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition">
+                    <option value="pendiente">Pendiente</option>
+                    <option value="realizado">Realizado</option>
+                </select>
+            </div>
+
+            <div class="input-icon">
+                <label for="editEventImg" class="block font-semibold mb-2 cursor-pointer select-none">Imagen del evento
+                    (URL o archivo)</label>
+                <input type="url" id="editEventImgUrl" name="editEventImgUrl" placeholder="URL de imagen"
+                       class="w-full p-4 rounded-xl border border-primary dark:border-slate-700 bg-soft dark:bg-slate-800 text-slate-900 dark:text-white font-semibold transition mb-4" />
+                <input type="file" id="editEventImgFile" accept="image/*"
+                       class="w-full text-sm text-slate-900 dark:text-white cursor-pointer" />
+                <img id="editEventImgPreview" src="" alt="Preview imagen" class="mt-4 rounded-xl max-h-48 object-cover" />
+            </div>
+
+            <div class="flex justify-end gap-4 mt-4">
+                <button type="button" id="cancelEditBtn"
+                        class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition">Cancelar</button>
+                <button type="submit"
+                        class="px-6 py-3 bg-primary hover:bg-secondary text-white rounded-xl font-semibold transition">Guardar
+                    Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const translations = {
+        es: {
+            pageTitle: "📅 Gestión de Eventos",
+            formTitle: "Crear nuevo evento",
+            listTitle: "Eventos creados",
+            statsTitle: "Estadísticas",
+            eventNamePlaceholder: "Nombre del evento",
+            eventReasonPlaceholder: "Motivo o descripción",
+            eventBudgetPlaceholder: "Presupuesto estimado (USD)",
+            eventAttendeesPlaceholder: "Personas interesadas",
+            eventStatusPending: "Pendiente",
+            eventStatusDone: "Realizado",
+            saveButton: "Guardar Evento",
+            alertFillAll: "Por favor completa todos los campos correctamente",
+            alertConfirmDelete: "¿Seguro que deseas eliminar este evento?",
+            btnChangeStatus: "Cambiar estado",
+            btnDelete: "Eliminar",
+            btnEdit: "Editar",
+            toggleLangBtn: "🌐 English"
+        },
+        en: {
+            pageTitle: "📅 Event Management",
+            formTitle: "Create New Event",
+            listTitle: "Created Events",
+            statsTitle: "Statistics",
+            eventNamePlaceholder: "Event Name",
+            eventReasonPlaceholder: "Reason or description",
+            eventBudgetPlaceholder: "Estimated Budget (USD)",
+            eventAttendeesPlaceholder: "Interested People",
+            eventStatusPending: "Pending",
+            eventStatusDone: "Done",
+            saveButton: "Save Event",
+            alertFillAll: "Please fill in all fields correctly",
+            alertConfirmDelete: "Are you sure you want to delete this event?",
+            btnChangeStatus: "Change status",
+            btnDelete: "Delete",
+            btnEdit: "Edit",
+            toggleLangBtn: "🌐 Español"
+        }
+    };
+
+    let currentLang = "es";
+    let darkMode = false;
+    let events = [
+        {
+            name: "Día Zambos",
+            dateTime: "2025-07-25T14:00",
+            reason: "Celebración cultural con música, danza y comida típica",
+            budget: 1500,
+            attendees: 200,
+            status: "pendiente",
+            img:
+                "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80"
+        },
+        {
+            name: "Fiesta del Viejo Oeste",
+            dateTime: "2025-08-10T19:00",
+            reason: "Evento temático con disfraces, juegos y concursos",
+            budget: 2200,
+            attendees: 150,
+            status: "realizado",
+            img:
+                "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80"
+        }
+    ];
+
+    const form = document.getElementById("eventForm");
+    const eventList = document.getElementById("eventList");
+    const statsBudget = document.getElementById("statsBudget");
+    const statsAttendees = document.getElementById("statsAttendees");
+    const toggleLangBtn = document.getElementById("toggleLang");
+    const toggleDarkBtn = document.getElementById("toggleDarkMode");
+    const pageTitle = document.getElementById("pageTitle");
+    const formTitle = document.getElementById("formTitle");
+    const listTitle = document.getElementById("listTitle");
+    const statsTitle = document.getElementById("statsTitle");
+
+    // Modal y form edición
+    const editModal = document.getElementById("editModal");
+    const editModalBackdrop = document.getElementById("editModalBackdrop");
+    const editEventForm = document.getElementById("editEventForm");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const editEventImgUrl = document.getElementById("editEventImgUrl");
+    const editEventImgFile = document.getElementById("editEventImgFile");
+    const editEventImgPreview = document.getElementById("editEventImgPreview");
+
+    let editingIndex = null;
+
+    function translateUI() {
+        const t = translations[currentLang];
+
+        pageTitle.textContent = t.pageTitle;
+        formTitle.textContent = t.formTitle;
+        listTitle.textContent = t.listTitle;
+        statsTitle.textContent = t.statsTitle;
+
+        form.eventName.placeholder = t.eventNamePlaceholder;
+        form.eventReason.placeholder = t.eventReasonPlaceholder;
+        form.eventBudget.placeholder = t.eventBudgetPlaceholder;
+        form.eventAttendees.placeholder = t.eventAttendeesPlaceholder;
+
+        form.eventStatus.options[0].text = t.eventStatusPending;
+        form.eventStatus.options[1].text = t.eventStatusDone;
+
+        form.querySelector('button[type="submit"]').textContent = t.saveButton;
+
+        toggleLangBtn.textContent = t.toggleLangBtn;
+
+        renderEvents();
+    }
+
+    function renderEvents() {
+        eventList.innerHTML = "";
+        const t = translations[currentLang];
+
+        let totalBudget = 0;
+        let totalAttendees = 0;
+
+        events.forEach((event, i) => {
+            totalBudget += event.budget;
+            totalAttendees += event.attendees;
+
+            const statusClass =
+                event.status === "pendiente"
+                    ? "bg-yellow-200 text-yellow-900"
+                    : "bg-green-200 text-green-900";
+
+            const card = document.createElement("article");
+            card.className =
+                "bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden flex flex-col";
+
+            card.innerHTML = `
+          <img src="${event.img ?? 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'}" alt="${event.name}"
+            class="w-full h-48 object-cover brightness-90 hover:brightness-100 transition" />
+          <div class="p-6 flex flex-col flex-grow justify-between">
+            <header class="mb-4">
+              <h3 class="text-2xl font-extrabold mb-1">${event.name}</h3>
+              <p class="text-sm italic text-primary">${new Date(event.dateTime).toLocaleString(currentLang === 'es' ? 'es-ES' : 'en-US', { dateStyle: 'long', timeStyle: 'short' })}</p>
+            </header>
+            <p class="mb-4 flex-grow text-slate-700 dark:text-slate-300">${event.reason}</p>
+            <p class="font-semibold mb-2">${currentLang === 'es' ? 'Presupuesto:' : 'Budget:'} $${event.budget.toFixed(2)}</p>
+            <p class="font-semibold mb-4">${currentLang === 'es' ? 'Personas interesadas:' : 'Interested people:'} ${event.attendees}</p>
+            <p class="inline-block px-3 py-1 rounded-full font-semibold mb-6 ${statusClass} select-none">${currentLang === 'es' ? (event.status === 'pendiente' ? 'Pendiente' : 'Realizado') : (event.status === 'pendiente' ? 'Pending' : 'Done')}</p>
+
+            <div class="flex gap-3">
+              <button data-index="${i}" class="changeStatusBtn bg-primary hover:bg-secondary text-white rounded-xl py-2 flex-grow transition">${t.btnChangeStatus}</button>
+              <button data-index="${i}" class="editBtn bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl py-2 flex-grow transition">${t.btnEdit}</button>
+              <button data-index="${i}" class="deleteBtn bg-red-600 hover:bg-red-700 text-white rounded-xl py-2 flex-grow transition">${t.btnDelete}</button>
+            </div>
+          </div>
+        `;
+
+            eventList.appendChild(card);
+        });
+
+        statsBudget.textContent = `${currentLang === 'es' ? 'Presupuesto total:' : 'Total budget:'} $${totalBudget.toFixed(2)}`;
+// Constantes
+        const totalEmployees = 250;
+        const totalEventSlots = events.length * totalEmployees; // e.g., 2 * 250 = 500
+
+// Presupuesto total
+        statsBudget.textContent = `${currentLang === 'es' ? 'Presupuesto total:' : 'Total budget:'} $${totalBudget.toFixed(2)}`;
+
+// Porcentaje global de asistencia/interés
+        const globalInterestPercentage = totalEventSlots > 0
+            ? ((totalAttendees / totalEventSlots) * 100).toFixed(1)
+            : 0;
+
+// Mostrar en UI
+        statsAttendees.textContent =
+            `${currentLang === 'es'
+                ? 'Personas interesadas total:'
+                : 'Total interested people:'} ${totalAttendees} (${globalInterestPercentage}% ${currentLang === 'es'
+                ? `de ${totalEventSlots} posibles`
+                : `of ${totalEventSlots} possible slots`})`;
+
+    }
+
+    function clearForm() {
+        form.reset();
+    }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = form.eventName.value.trim();
+        const dateTime = form.eventDateTime.value;
+        const reason = form.eventReason.value.trim();
+        const budget = parseFloat(form.eventBudget.value);
+        const attendees = parseInt(form.eventAttendees.value);
+        const status = form.eventStatus.value;
+
+        if (!name || !dateTime || !reason || isNaN(budget) || isNaN(attendees)) {
+            alert(translations[currentLang].alertFillAll);
+            return;
+        }
+
+        events.push({ name, dateTime, reason, budget, attendees, status, img: null });
+
+        clearForm();
+        renderEvents();
+    });
+
+    eventList.addEventListener("click", (e) => {
+        if (e.target.classList.contains("changeStatusBtn")) {
+            const idx = parseInt(e.target.dataset.index);
+            events[idx].status = events[idx].status === "pendiente" ? "realizado" : "pendiente";
+            renderEvents();
+        }
+
+        if (e.target.classList.contains("deleteBtn")) {
+            const idx = parseInt(e.target.dataset.index);
+            if (confirm(translations[currentLang].alertConfirmDelete)) {
+                events.splice(idx, 1);
+                renderEvents();
+            }
+        }
+
+        if (e.target.classList.contains("editBtn")) {
+            editingIndex = parseInt(e.target.dataset.index);
+            openEditModal(editingIndex);
+        }
+    });
+
+    // Modal: abrir con datos cargados
+    function openEditModal(index) {
+        const ev = events[index];
+        editEventForm.reset();
+
+        editEventForm.editEventName.value = ev.name;
+        editEventForm.editEventDateTime.value = ev.dateTime;
+        editEventForm.editEventReason.value = ev.reason;
+        editEventForm.editEventBudget.value = ev.budget;
+        editEventForm.editEventAttendees.value = ev.attendees;
+        editEventForm.editEventStatus.value = ev.status;
+        editEventImgPreview.src = ev.img || "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80";
+        editEventImgUrl.value = ev.img || "";
+
+        editEventImgFile.value = "";
+
+        editModal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+    }
+
+    // Modal: cerrar
+    function closeEditModal() {
+        editModal.classList.add("hidden");
+        document.body.style.overflow = "";
+        editingIndex = null;
+    }
+
+    cancelEditBtn.addEventListener("click", closeEditModal);
+    editModalBackdrop.addEventListener("click", closeEditModal);
+
+    // Imagen: cambiar preview con url
+    editEventImgUrl.addEventListener("input", () => {
+        const url = editEventImgUrl.value.trim();
+        if (url) {
+            editEventImgPreview.src = url;
+        } else {
+            editEventImgPreview.src = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80";
+        }
+    });
+
+    // Imagen: cambiar preview con archivo local
+    editEventImgFile.addEventListener("change", () => {
+        const file = editEventImgFile.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                editEventImgPreview.src = e.target.result;
+                editEventImgUrl.value = "";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Guardar edición
+    editEventForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = editEventForm.editEventName.value.trim();
+        const dateTime = editEventForm.editEventDateTime.value;
+        const reason = editEventForm.editEventReason.value.trim();
+        const budget = parseFloat(editEventForm.editEventBudget.value);
+        const attendees = parseInt(editEventForm.editEventAttendees.value);
+        const status = editEventForm.editEventStatus.value;
+        let img = editEventImgUrl.value.trim() || editEventImgPreview.src;
+
+        if (!name || !dateTime || !reason || isNaN(budget) || isNaN(attendees)) {
+            alert(translations[currentLang].alertFillAll);
+            return;
+        }
+
+        events[editingIndex] = { name, dateTime, reason, budget, attendees, status, img };
+        closeEditModal();
+        renderEvents();
+    });
+
+    toggleLangBtn.addEventListener("click", () => {
+        currentLang = currentLang === "es" ? "en" : "es";
+        translateUI();
+    });
+
+    toggleDarkBtn.addEventListener("click", () => {
+        darkMode = !darkMode;
+        if (darkMode) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    });
+
+    translateUI();
+
+    // Imagen preview y subida
+    const eventImgUrl = document.getElementById("eventImgUrl");
+    const eventImgFile = document.getElementById("eventImgFile");
+    const eventImgPreview = document.getElementById("eventImgPreview");
+
+    eventImgUrl.addEventListener("input", () => {
+        const url = eventImgUrl.value.trim();
+        if (url) {
+            eventImgPreview.src = url;
+            eventImgPreview.classList.remove("hidden");
+        } else {
+            eventImgPreview.src = "";
+            eventImgPreview.classList.add("hidden");
+        }
+    });
+
+    eventImgFile.addEventListener("change", () => {
+        const file = eventImgFile.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                eventImgPreview.src = e.target.result;
+                eventImgPreview.classList.remove("hidden");
+                eventImgUrl.value = "";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+
+</html>

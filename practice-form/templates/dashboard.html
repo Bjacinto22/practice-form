@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HRMS Dashboard Futurista</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Transiciones suaves para botones y cards */
+        .transition-smooth {
+            transition: all 0.3s ease;
+        }
+
+        /* Scroll interno en grid para dispositivos móviles */
+        @media (max-width: 768px) {
+            .scroll-x {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+    <script>
+        // Configuración Tailwind para modo oscuro class-based
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        skyLight: '#e0f2fe',
+                        skyMedium: '#38bdf8',
+                        skyDark: '#0c4a6e',
+                        slateDark: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+        class="bg-gradient-to-br from-skyLight to-white font-sans text-slate-800 transition-colors duration-500 dark:bg-slate-900 dark:text-slate-200"
+        id="body"
+>
+<div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside
+            class="w-64 bg-white p-6 shadow-2xl rounded-r-2xl border-r-4 border-skyMedium dark:bg-slate-800 dark:border-skyMedium transition-colors duration-500 relative"
+    >
+        <h2
+                class="text-3xl font-extrabold text-skyMedium mb-12 tracking-wide dark:text-skyLight select-none"
+        >
+            🌤️ HRMS
+        </h2>
+        <nav class="space-y-6 text-sm">
+            <a
+                    href="#"
+                    class="flex items-center gap-3 text-skyMedium font-semibold dark:text-skyLight hover:text-skyDark dark:hover:text-skyLight transition-smooth"
+            ><svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+            >
+                <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M3 7h18M3 12h18M3 17h18"
+                />
+            </svg>
+                Dashboard</a
+            >
+            <a
+                    href="#"
+                    class="flex items-center gap-3 text-gray-600 hover:text-skyMedium dark:text-gray-400 dark:hover:text-skyLight transition-smooth"
+            ><svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+            >
+                <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5.121 17.804A2 2 0 006.5 20h11a2 2 0 001.379-3.196M16 10V4a2 2 0 00-2-2H6a2 2 0 00-2 2v6m4 4h8m-4-4v4"
+                />
+            </svg>
+                Employees</a
+            >
+            <a
+                    href="#"
+                    class="flex items-center gap-3 text-gray-600 hover:text-skyMedium dark:text-gray-400 dark:hover:text-skyLight transition-smooth"
+            ><svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+            >
+                <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M9 17v-2a4 4 0 018 0v2"
+                />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14v4m0-4h-4m4 0h4" />
+            </svg>
+                Reports</a
+            >
+            <a
+                    href="#"
+                    class="flex items-center gap-3 text-gray-600 hover:text-skyMedium dark:text-gray-400 dark:hover:text-skyLight transition-smooth"
+            ><svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+            >
+                <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M11 11V9a4 4 0 00-4-4H5a4 4 0 00-4 4v2m2 0h16"
+                />
+            </svg>
+                Settings</a
+            >
+        </nav>
+
+        <div class="absolute bottom-6 flex space-x-6">
+            <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg"
+                    class="w-14"
+                    alt="Go logo"
+            />
+            <img src="/static/img.png" class="w-12" alt="n8n logo" />
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-10 space-y-12 overflow-y-auto max-w-full">
+        <!-- Header + Dark Mode Toggle -->
+        <div class="flex justify-between items-center flex-wrap gap-4">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-skyDark dark:text-skyLight data-i18n=dashboard.title">
+               Panel Estratégico de RRHH
+            </h1>
+
+            <button
+                    id="toggleDark"
+                    aria-label="Toggle Dark Mode"
+                    title="Cambiar modo claro/oscuro"
+                    class="px-5 py-2 rounded-xl bg-skyMedium text-white hover:bg-skyDark font-semibold shadow-md transition-smooth select-none"
+            >
+                🌙
+            </button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 scroll-x"
+                role="region"
+                aria-label="Indicadores clave"
+        >
+            <article
+                    class="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-6 border-l-8 border-skyMedium transition-smooth hover:shadow-xl"
+                    tabindex="0"
+            >
+                <p class="text-sm text-gray-500 dark:text-gray-300 select-none">Nuevos perfiles creados este mes</p>
+                <p class="text-3xl font-bold text-skyMedium dark:text-skyLight select-text">12</p>
+            </article>
+            <article
+                    class="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-6 border-l-8 border-sky-500 transition-smooth hover:shadow-xl"
+                    tabindex="0"
+            >
+                <p class="text-sm text-gray-500 dark:text-gray-300 select-none">Validaciones pendientes</p>
+                <p class="text-3xl font-bold text-sky-600 dark:text-sky-400 select-text">5</p>
+            </article>
+            <article
+                    class="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-6 border-l-8 border-cyan-500 transition-smooth hover:shadow-xl"
+                    tabindex="0"
+            >
+                <p class="text-sm text-gray-500 dark:text-gray-300 select-none">Total empleados activos</p>
+                <p class="text-3xl font-bold text-cyan-600 dark:text-cyan-400 select-text">145</p>
+            </article>
+            <article
+                    class="bg-white dark:bg-slate-800 shadow-lg rounded-2xl p-6 border-l-8 border-blue-500 transition-smooth hover:shadow-xl"
+                    tabindex="0"
+            >
+                <p class="text-sm text-gray-500 dark:text-gray-300 select-none">Eventos planeados</p>
+                <p class="text-3xl font-bold text-blue-600 dark:text-blue-500 select-text">6</p>
+            </article>
+        </div>
+
+        <!-- CTA Formulario -->
+        <div class="flex justify-center mt-10">
+            <a
+                    href="form.html"
+                    class="px-10 py-4 bg-skyMedium text-white rounded-xl shadow-md hover:bg-skyDark font-bold text-lg transition-smooth select-none"
+            >📝 Formulario de Solicitud de Empleo</a
+            >
+        </div>
+
+        <!-- Reporte Madre Visual -->
+        <section
+                class="bg-white dark:bg-slate-900 shadow-2xl rounded-3xl p-8 dark:shadow-slate-800 transition-colors duration-500"
+                aria-label="Reporte Madre Consolidado"
+        >
+            <h2
+                    class="text-3xl font-bold text-skyMedium mb-6 dark:text-skyLight select-none"
+            >
+                📊 Reporte Madre Consolidado
+            </h2>
+
+            <!-- Filtros de rango meses para Movimientos -->
+            <div
+                    class="flex flex-wrap items-center gap-4 mb-8"
+                    role="region"
+                    aria-label="Filtros para gráficos de movimientos"
+            >
+                <label
+                        for="filterMonths"
+                        class="font-semibold text-skyMedium dark:text-skyLight select-none"
+                >
+                    Filtrar movimientos últimos meses:
+                </label>
+                <select
+                        id="filterMonths"
+                        class="rounded-xl border border-skyMedium dark:border-slate-700 p-2 focus:outline-none focus:ring-2 focus:ring-skyMedium dark:bg-slate-800 dark:text-gray-300 transition-smooth"
+                >
+                    <option value="6" selected>Últimos 6 meses</option>
+                    <option value="3">Últimos 3 meses</option>
+                    <option value="12">Últimos 12 meses</option>
+                </select>
+
+                <!-- Toggles para datasets -->
+                <div class="ml-auto flex gap-4">
+                    <label
+                            class="inline-flex items-center gap-2 cursor-pointer text-skyMedium dark:text-skyLight font-semibold select-none"
+                    ><input
+                            type="checkbox"
+                            id="toggleIngresos"
+                            checked
+                            class="accent-skyMedium dark:accent-skyLight"
+                    />
+                        Ingresos</label
+                    >
+                    <label
+                            class="inline-flex items-center gap-2 cursor-pointer text-red-600 dark:text-red-400 font-semibold select-none"
+                    ><input
+                            type="checkbox"
+                            id="toggleEgresos"
+                            checked
+                            class="accent-red-600 dark:accent-red-400"
+                    />
+                        Egresos</label
+                    >
+                </div>
+            </div>
+
+            <div
+                    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 scroll-x"
+                    role="region"
+                    aria-label="Gráficos del reporte madre"
+            >
+                <!-- Gráfico Género -->
+                <div
+                        class="flex flex-col items-center p-6 border border-skyMedium rounded-xl shadow-sm bg-skyLight dark:bg-slate-800 dark:border-skyMedium transition-colors"
+                        role="region"
+                        aria-label="Gráfico de distribución de género"
+                >
+                    <canvas
+                            id="chartGenero"
+                            class="max-w-[300px] max-h-[300px]"
+                            role="img"
+                            aria-label="Distribución de género"
+                    ></canvas>
+                    <h3
+                            class="mt-4 text-xl font-semibold text-skyMedium dark:text-skyLight select-none"
+                    >
+                        Distribución de Género
+                    </h3>
+                </div>
+
+                <!-- Gráfico Presupuesto -->
+                <div
+                        class="flex flex-col items-center p-6 border border-skyMedium rounded-2xl shadow-md bg-skyLight dark:bg-slate-800 dark:border-skyMedium transition-colors w-full"
+                        role="region"
+                        aria-label="Gráfico de presupuesto para eventos"
+                >
+                    <canvas
+                            id="chartPresupuesto"
+                            class="w-full max-w-[420px] h-[280px] md:h-[300px]"
+                            role="img"
+                            aria-label="Presupuesto para eventos"
+                    ></canvas>
+
+                    <h3
+                            class="mt-5 text-lg sm:text-xl font-bold text-skyMedium dark:text-skyLight select-none text-center"
+                    >
+                        Presupuesto para Eventos (USD)
+                    </h3>
+                </div>
+
+
+                <!-- Niños en la empresa (dato fijo) -->
+                <div
+                        class="flex flex-col justify-center items-center p-6 border border-skyMedium rounded-xl shadow-sm bg-skyLight dark:bg-slate-800 dark:border-skyMedium transition-colors"
+                        role="region"
+                        aria-label="Número de niños en la empresa"
+                        tabindex="0"
+                >
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-20 w-20 text-skyMedium dark:text-sky-400 mb-3 select-none"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            aria-hidden="true"
+                    >
+                        <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M17 20h5v-2a4 4 0 00-4-4h-1m-6 6H7v-2a4 4 0 014-4h1m-1-5a3 3 0 11-6 0 3 3 0 016 0zm6 1a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                    <p class="text-3xl font-extrabold text-skyMedium dark:text-sky-300 select-text">78</p>
+                    <p
+                            class="text-skyMedium dark:text-sky-300 font-semibold mt-1 select-none"
+                    >
+                        Niños en la empresa
+                    </p>
+                </div>
+
+                <!-- Gráfico Movimientos (Ingresos y Egresos) -->
+                <div
+                        class="flex flex-col items-center p-6 border border-skyMedium rounded-xl shadow-sm bg-skyLight dark:bg-slate-800 dark:border-skyMedium transition-colors"
+                        role="region"
+                        aria-label="Gráfico de movimientos mensuales"
+                >
+                    <canvas
+                            id="chartMovimientos"
+                            class="max-w-[380px] max-h-[280px]"
+                            role="img"
+                            aria-label="Movimientos mensuales"
+                    ></canvas>
+                    <h3
+                            class="mt-4 text-xl font-semibold text-skyMedium dark:text-skyLight select-none"
+                    >
+                        Movimientos Mensuales
+                    </h3>
+                </div>
+
+                <!-- Gráfico Ubicación -->
+                <div
+                        class="flex flex-col items-center p-6 border border-skyMedium rounded-xl shadow-sm bg-skyLight dark:bg-slate-800 dark:border-skyMedium transition-colors"
+                        role="region"
+                        aria-label="Gráfico de residencia por zona"
+                >
+                    <canvas
+                            id="chartZonas"
+                            class="max-w-[320px] max-h-[320px]"
+                            role="img"
+                            aria-label="Residencia por zona"
+                    ></canvas>
+                    <h3
+                            class="mt-4 text-xl font-semibold text-skyMedium dark:text-skyLight select-none"
+                    >
+                        Residencia por Zona
+                    </h3>
+                </div>
+
+                <!-- Gráfico Inactivos -->
+                <div
+                        class="flex flex-col items-center p-6 border border-skyMedium rounded-xl shadow-sm bg-skyLight dark:bg-slate-800 dark:border-skyMedium transition-colors"
+                        role="region"
+                        aria-label="Gráfico de inactivos por motivo"
+                >
+                    <canvas
+                            id="chartInactivos"
+                            class="max-w-[360px] max-h-[280px]"
+                            role="img"
+                            aria-label="Inactivos por motivo"
+                    ></canvas>
+                    <h3
+                            class="mt-4 text-xl font-semibold text-skyMedium dark:text-skyLight select-none"
+                    >
+                        Inactivos por Motivo
+                    </h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Funcionalidades Avanzadas -->
+        <section
+                class="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-xl mt-12 transition-colors duration-500"
+                aria-label="Funcionalidades Avanzadas"
+        >
+            <h2
+                    class="text-2xl font-bold text-sky-700 dark:text-sky-300 mb-6 select-none"
+            >
+                ⚙️ Funcionalidades Avanzadas
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <!-- Botón 1 -->
+                <a
+                        href="email.html"
+                        class="group flex flex-col justify-center items-center text-center bg-sky-600 hover:bg-sky-700 dark:hover:bg-emerald-400 focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 text-white font-semibold rounded-2xl px-6 py-6 transition-all select-none shadow-lg hover:scale-105"
+                        aria-label="Simular envío de correos personalizados"
+                >
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-10 h-10 mb-2"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                    >
+                        <path d="M4 4h16v16H4z" />
+                        <path d="M22 6L12 13 2 6" />
+                    </svg>
+                    <span class="text-lg">Enviar Correo</span>
+                </a>
+
+
+                <!-- Botón 2 -->
+                <a
+                        href="suspend.html"
+                        class="group flex flex-col justify-center items-center text-center bg-sky-500 hover:bg-sky-600 dark:hover:bg-yellow-400 focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-700 text-white font-semibold rounded-2xl px-6 py-6 transition-all select-none shadow-lg hover:scale-105"
+                        aria-label="Suspensión temporal por incapacidad"
+                >
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-10 h-10 mb-2"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                    >
+                        <path d="M9 17v-2a4 4 0 018 0v2" />
+                        <path d="M12 14v4m0-4h-4m4 0h4" />
+                    </svg>
+                    <span class="text-lg">Suspensión</span>
+                </a>
+
+                <!-- Botón 3 -->
+                <a
+                        href="eventos.html"
+                        class="group flex flex-col justify-center items-center text-center bg-sky-400 hover:bg-sky-600 dark:hover:bg-sky-400 focus:ring-4 focus:ring-sky-300 dark:focus:ring-sky-700 text-white font-semibold rounded-2xl px-6 py-6 transition-all select-none shadow-lg hover:scale-105"
+                        aria-label="Cálculo automático de antigüedad, generación y sexo"
+                >
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-10 h-10 mb-2"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                    >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                    <span class="text-lg">Eventos</span>
+                </a>
+            </div>
+        </section>
+
+        <section
+                class="bg-white dark:bg-slate-900 shadow-xl rounded-3xl p-8 mt-12 transition-colors duration-500"
+                aria-label="Control de Seguridad y Validación"
+        >
+            <h2 class="text-2xl font-bold text-sky-700 dark:text-sky-300 mb-6 select-none">
+                🔐 Control de Seguridad y Validación
+            </h2>
+
+            <div class="grid sm:grid-cols-2 gap-6">
+                <!-- Prohibición familiares -->
+                <div class="flex items-start gap-4 bg-sky-50 dark:bg-sky-950/30 p-4 rounded-xl shadow-sm hover:shadow-md transition-all">
+                    <div class="bg-sky-200 dark:bg-sky-600 p-2 rounded-full">
+                        <svg class="w-6 h-6 text-sky-700 dark:text-sky-200" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-sky-800 dark:text-sky-200">
+                            Prohibición a familiares directos
+                        </p>
+                        <p class="text-sm text-sky-700 dark:text-sky-400">
+                            Se valida automáticamente cualquier coincidencia familiar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Validaciones automáticas -->
+                <div class="flex items-start gap-4 bg-sky-50 dark:bg-sky-950/30 p-4 rounded-xl shadow-sm hover:shadow-md transition-all">
+                    <div class="bg-sky-200 dark:bg-sky-600 p-2 rounded-full">
+                        <svg class="w-6 h-6 text-sky-700 dark:text-sky-200" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M3 10h1l2 7h13l2-7h1M16 21a2 2 0 100-4 2 2 0 000 4zM8 21a2 2 0 100-4 2 2 0 000 4z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-sky-800 dark:text-sky-200">
+                            Validación automática y manual
+                        </p>
+                        <p class="text-sm text-sky-700 dark:text-sky-400">
+                            Con doble revisión previa a la incorporación.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Detección de documentos falsificados -->
+                <div class="flex items-start gap-4 bg-sky-50 dark:bg-sky-950/30 p-4 rounded-xl shadow-sm hover:shadow-md transition-all sm:col-span-2">
+                    <div class="bg-sky-200 dark:bg-sky-600 p-2 rounded-full">
+                        <svg class="w-6 h-6 text-sky-700 dark:text-sky-200" fill="none" stroke="currentColor" stroke-width="2"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-sky-800 dark:text-sky-200">
+                            Alertas por documentos falsificados
+                        </p>
+                        <p class="text-sm text-sky-700 dark:text-sky-400">
+                            Notificaciones automáticas al detectar anomalías.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    // Toggle modo oscuro
+    const toggleBtn = document.getElementById('toggleDark');
+    const body = document.getElementById('body');
+    toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        if (body.classList.contains('dark')) {
+            toggleBtn.textContent = '☀️';
+        } else {
+            toggleBtn.textContent = '🌙';
+        }
+    });
+
+    // Datos para gráficas
+    const dataGenero = {
+        labels: ['Mujeres', 'Hombres', 'No especificado'],
+        datasets: [
+            {
+                label: 'Cantidad',
+                data: [43, 57, 3],
+                backgroundColor: ['#0ea5e9', '#0284c7', '#94a3b8'],
+                borderWidth: 0,
+            },
+        ],
+    };
+
+    const dataPresupuesto = {
+        labels: ['Cumpleaños', 'Día del Niño', 'Capacitaciones', 'Navidad', 'otros'],
+        datasets: [
+            {
+                label: 'Presupuesto (USD)',
+                data: [15000, 18000, 22000, 25000, 30000], // Puedes ajustar estos montos según tu realidad
+                backgroundColor: '#38bdf8',
+                borderRadius: 6,
+            },
+        ],
+    };
+
+    const dataZonas = {
+        labels: ['Choloma', 'San Pedro Sula', 'Villanueva', 'Puerto Cortes'],
+        datasets: [
+            {
+                label: 'Residencia',
+                data: [60, 70, 10, 5],
+                backgroundColor: ['#0284c7', '#0ea5e9', '#7dd3fc', '#bae6fd'],
+                borderWidth: 0,
+            },
+        ],
+    };
+
+    const dataInactivos = {
+        labels: ['Enfermedad', 'Licencia', 'Renuncia', 'Despidos'],
+        datasets: [
+            {
+                label: 'Inactivos (Total: 18)',
+                data: [6, 4, 5, 3],
+                backgroundColor: ['#60a5fa', '#38bdf8', '#0284c7', '#0369a1'],
+                borderWidth: 0,
+            },
+        ],
+    };
+
+    // Movimientos datos base para 12 meses (ejemplo)
+    const movimientosBase = {
+        labels: [
+            'Ago 2024',
+            'Sep 2024',
+            'Oct 2024',
+            'Nov 2024',
+            'Dic 2024',
+            'Ene 2025',
+            'Feb 2025',
+            'Mar 2025',
+            'Abr 2025',
+            'May 2025',
+            'Jun 2025',
+            'Jul 2025',
+        ],
+        ingresos: [25, 30, 20, 35, 40, 30, 28, 32, 40, 42, 38, 45],
+        egresos: [10, 8, 12, 5, 7, 15, 10, 7, 8, 5, 6, 4],
+    };
+
+    // Configuraciones generales para gráficos
+    function commonOptions() {
+        return {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.body).color,
+                        font: { weight: '600', size: 14 },
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: 'rgba(0,0,0,0.75)',
+                    titleFont: { weight: '700' },
+                },
+            },
+            animation: {
+                duration: 500,
+                easing: 'easeOutQuad',
+            },
+        };
+    }
+
+    // Chart Generations
+    const ctxGenero = document.getElementById('chartGenero').getContext('2d');
+    const chartGenero = new Chart(ctxGenero, {
+        type: 'doughnut',
+        data: dataGenero,
+        options: {
+            ...commonOptions(),
+            cutout: '35%',
+        },
+    });
+
+    const ctxPresupuesto = document.getElementById('chartPresupuesto').getContext('2d');
+    const chartPresupuesto = new Chart(ctxPresupuesto, {
+        type: 'bar',
+        data: dataPresupuesto,
+        options: {
+            ...commonOptions(),
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: getComputedStyle(document.body).color },
+                    grid: { color: 'rgba(100,100,100,0.1)' },
+                },
+                x: {
+                    ticks: { color: getComputedStyle(document.body).color },
+                    grid: { color: 'transparent' },
+                },
+            },
+        },
+    });
+
+    const ctxZonas = document.getElementById('chartZonas').getContext('2d');
+    const chartZonas = new Chart(ctxZonas, {
+        type: 'pie',
+        data: dataZonas,
+        options: commonOptions(),
+    });
+
+    const ctxInactivos = document.getElementById('chartInactivos').getContext('2d');
+    const chartInactivos = new Chart(ctxInactivos, {
+        type: 'bar',
+        data: dataInactivos,
+        options: {
+            ...commonOptions(),
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: getComputedStyle(document.body).color },
+                    grid: { color: 'rgba(100,100,100,0.1)' },
+                },
+                x: {
+                    ticks: { color: getComputedStyle(document.body).color },
+                    grid: { color: 'transparent' },
+                },
+            },
+        },
+    });
+
+    // Movimientos: dinámica con filtro y toggle datasets
+    const ctxMovimientos = document.getElementById('chartMovimientos').getContext('2d');
+
+    // Inicial datos filtrados (6 meses default)
+    let currentMonths = 6;
+    let showIngresos = true;
+    let showEgresos = true;
+
+    function filterMovimientosData(months) {
+        const labels = movimientosBase.labels.slice(-months);
+        const ingresos = movimientosBase.ingresos.slice(-months);
+        const egresos = movimientosBase.egresos.slice(-months);
+
+        const datasets = [];
+        if (showIngresos) {
+            datasets.push({
+                label: 'Ingresos',
+                data: ingresos,
+                borderColor: '#0ea5e9',
+                backgroundColor: 'rgba(14, 165, 233, 0.3)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                borderWidth: 3,
+                yAxisID: 'y',
+            });
+        }
+        if (showEgresos) {
+            datasets.push({
+                label: 'Egresos',
+                data: egresos,
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.3)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                borderWidth: 3,
+                yAxisID: 'y',
+            });
+        }
+        return { labels, datasets };
+    }
+
+    let chartMovimientos = new Chart(ctxMovimientos, {
+        type: 'line',
+        data: filterMovimientosData(currentMonths),
+        options: {
+            ...commonOptions(),
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: getComputedStyle(document.body).color },
+                    grid: { color: 'rgba(100,100,100,0.1)' },
+                    position: 'left',
+                    yAxisID: 'y',
+                },
+                x: {
+                    ticks: { color: getComputedStyle(document.body).color },
+                    grid: { color: 'transparent' },
+                },
+            },
+        },
+    });
+
+    // Elementos toggles y filtro
+    const filterSelect = document.getElementById('filterMonths');
+    const toggleIngresosEl = document.getElementById('toggleIngresos');
+    const toggleEgresosEl = document.getElementById('toggleEgresos');
+
+    function updateMovimientosChart() {
+        const filteredData = filterMovimientosData(currentMonths);
+        chartMovimientos.data.labels = filteredData.labels;
+        chartMovimientos.data.datasets = filteredData.datasets;
+        chartMovimientos.update();
+    }
+
+    filterSelect.addEventListener('change', (e) => {
+        currentMonths = Number(e.target.value);
+        updateMovimientosChart();
+    });
+
+    toggleIngresosEl.addEventListener('change', (e) => {
+        showIngresos = e.target.checked;
+        updateMovimientosChart();
+    });
+
+    toggleEgresosEl.addEventListener('change', (e) => {
+        showEgresos = e.target.checked;
+        updateMovimientosChart();
+    });
+
+    // Actualizar colores gráficos al cambiar modo oscuro/claro
+    const observer = new MutationObserver(() => {
+        // Actualizamos la paleta y estilos de los gráficos
+        const colorText = getComputedStyle(document.body).color;
+        [chartGenero, chartPresupuesto, chartZonas, chartInactivos, chartMovimientos].forEach((chart) => {
+            chart.options.plugins.legend.labels.color = colorText;
+            chart.options.scales && Object.values(chart.options.scales).forEach((scale) => {
+                if (scale.ticks) scale.ticks.color = colorText;
+            });
+            chart.update();
+        });
+    });
+
+    observer.observe(body, { attributes: true, attributeFilter: ['class'] });
+</script>
+</body>
+
+</html>

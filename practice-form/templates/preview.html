@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumen del Solicitante</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-white to-white text-gray-800 font-sans antialiased">
+
+<div class="max-w-6xl mx-auto px-6 py-10">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-10">
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <img src="/static/img.png" alt="Logo" class="h-14">
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+
+            <h1 class="text-3xl font-bold text-black-500 tracking-tight">Resumen del Solicitante</h1>
+        </div>
+        <a href="/" class="text-sm text-sky-600 hover:underline">← Volver al inicio</a>
+    </div>
+
+    <!-- Componente Card -->
+    <div class="space-y-8">
+        <!-- Datos Personales -->
+        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-sky-600 mb-4">📌 Datos Personales</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 space-y-2 text-sm">
+                    <p><strong>Nombre:</strong> {{.FirstName}} {{.LastName}}</p>
+                    <p><strong>DNI:</strong> {{.DNI}}</p>
+                    <p><strong>Email:</strong> {{.Email}}</p>
+                    <p><strong>Dirección:</strong> {{.Address}}</p>
+                    <p><strong>Estado Civil:</strong> {{.MaritalStatus}}</p>
+                    <p><strong>Teléfono Móvil:</strong> {{.MobilePhone}}</p>
+                    <p><strong>Edad:</strong> {{.Age}}</p>
+                    <p><strong>Género:</strong> {{.Gender}}</p>
+                    <p><strong>Lugar de Nacimiento:</strong> {{.PlaceOfBirth}}</p>
+                    <p><strong>Fecha de Nacimiento:</strong> {{.DateOfBirth}}</p>
+                </div>
+                <div class="flex justify-center">
+                    <img src="/{{.Photo}}" alt="Foto del solicitante" class="w-40 h-40 object-cover rounded-full ring-4 ring-sky-200 shadow-md">
+                </div>
+            </div>
+        </div>
+
+        <!-- Solicitud de Empleo -->
+        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-sky-600 mb-4">📝 Solicitud de Empleo</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <p><strong>Puesto Solicitado:</strong> {{.JobApplication.AppliedPosition}}</p>
+                <p><strong>Fecha de Inicio:</strong> {{.JobApplication.StartDate}}</p>
+                <p><strong>Fuente de Información:</strong> {{.JobApplication.InformationSource}}</p>
+                <p><strong>Salario Esperado:</strong> {{.JobApplication.ExpectedSalary}}</p>
+                <p><strong>Firma:</strong> {{.JobApplication.Signature}}</p>
+                <p><strong>Lugar:</strong> {{.JobApplication.Place}}</p>
+                <p><strong>Fecha:</strong> {{.JobApplication.Date}}</p>
+            </div>
+        </div>
+
+        <!-- Información médica -->
+        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-sky-600 mb-4">🩺 Información Médica</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <p><strong>¿Padece enfermedades?:</strong> {{.MedicalInfo.IllnessAnswer}} - {{.MedicalInfo.IllnessDetail}}</p>
+                <p><strong>¿Alergias?:</strong> {{.MedicalInfo.AllergyAnswer}} - {{.MedicalInfo.AllergyDetail}}</p>
+                <p><strong>¿Medicamentos?:</strong> {{.MedicalInfo.MedicationAnswer}} - {{.MedicalInfo.MedicationDetail}}</p>
+                <p><strong>¿Cirugías?:</strong> {{.MedicalInfo.SurgeryAnswer}} - {{.MedicalInfo.SurgeryDetail}}</p>
+            </div>
+        </div>
+
+        <!-- Contactos de emergencia -->
+        <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+            <h2 class="text-xl font-semibold text-sky-600 mb-4">📞 Contactos de Emergencia</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                {{range .Emergencies}}
+                <div class="bg-sky-50 border border-sky-200 rounded-xl p-4 shadow-sm">
+                    <p><strong>Nombre:</strong> {{.FullName}}</p>
+                    <p><strong>Relación:</strong> {{.Relationship}}</p>
+                    <p><strong>Teléfono:</strong> {{.PhoneNumber}}</p>
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+
+    <!--  -->
+    <div class="flex flex-wrap justify-end gap-4 mt-10">
+        <a href="/applicant/{{.ID}}/pdf" class="bg-sky-600 hover:bg-sky-700 text-white text-sm py-2 px-5 rounded-xl shadow">
+            📄 Descargar PDF
+        </a>
+        <a href="/applicant/{{.ID}}/edit" class="bg-yellow-400 hover:bg-yellow-500 text-black text-sm py-2 px-5 rounded-xl shadow">
+            ✏️ Editar
+        </a>
+        <a href="/applicant/{{.ID}}/delete" class="bg-red-500 hover:bg-red-600 text-white text-sm py-2 px-5 rounded-xl shadow">
+            🗑️ Eliminar
+        </a>
+        <a href="/" class="bg-green-500 hover:bg-green-600 text-white text-sm py-2 px-5 rounded-xl shadow">
+            ✅ Confirmar Envío
+        </a>
+    </div>
+</div>
+
+<footer class="text-center text-sm text-gray-400 mt-12 mb-4">
+    © 2025 San Services. Todos los derechos reservados.
+</footer>
+</body>
+</html>
